@@ -1,4 +1,5 @@
 void setup() {
+  Serial.begin(9600);
   //init custom characters
   lcd.createChar(ARROW_UP, arrow_up);
   lcd.createChar(ARROW_DOWN, arrow_down);
@@ -44,7 +45,14 @@ void setup() {
     lcd.setCursor(0, 0);
     lcd.print("Contact Support!");
   }
-  
-  calibration++;
-  updateCalibration(calibration);
+
+  if (calibration < 254) {
+    calibration++;
+    updateCalibration(calibration);
+  }
+
+  hiScore = readHiScore();
+  if (hiScore > 254 || hiScore < 0) { //reset hiScore on error
+    updateHiScore(0);
+  }
 }

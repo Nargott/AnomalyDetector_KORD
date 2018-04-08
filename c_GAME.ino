@@ -5,6 +5,8 @@ char game_map[2][16] = {
 
 MapItem playerPos, targetPos, curPos;
 
+TargetUpdateMillis targetUpdateParams;
+
 unsigned long mapUpdatedAt, targetUpdatedAt, ledUpdatedAt, playerUpdatedAt;
 unsigned short mapUpdateInterval, targetUpdateInterval, ledUpdateInterval, playerUpdateInterval;
 
@@ -27,6 +29,9 @@ void gameSetup() {
   targetUpdateInterval = 2000;
   ledUpdateInterval = 100;
   playerUpdateInterval = 200;
+
+  targetUpdateParams.min = MIN_TARGET_UPDATE_DEFAULT;
+  targetUpdateParams.max = MAX_TARGET_UPDATE_DEFAULT;
   
   //fill the map for rand numbers
   for (int y=0; y<2; y++) {
@@ -71,7 +76,7 @@ void replaceTarget(bool isReplace = true) {
   setMap(&targetPos);
   displayMapItem(&targetPos);
 
-  targetUpdateInterval = random(2000, 10000); //TODO: to vars
+  targetUpdateInterval = random(targetUpdateParams.min, targetUpdateParams.max);
 
   targetUpdatedAt = millis();
 }
@@ -102,6 +107,8 @@ void controlPlayer() {
     if ((targetPos.x == playerPos.x) && (targetPos.y == playerPos.y)) {
       score++;
       beep();
+      updateHiScore(score);
+      setTargetUpdateByScore();
       replaceTarget(false);
     }
 
@@ -132,6 +139,11 @@ void gameLoop() {
     }
   
     if ((targetUpdateInterval > 0) && (millis() - targetUpdatedAt > targetUpdateInterval)) { //time to update target
+      if (score > 0) {
+        score--;
+        setTargetUpdateByScore();
+      }
+      //beep();
       replaceTarget();
     }
     
@@ -139,5 +151,19 @@ void gameLoop() {
       analogWrite(PIN_LED_GREEN, map((millis() - targetUpdatedAt), 0, targetUpdateInterval, 0, 255) );
       ledUpdatedAt = millis();
     }
+  } else { //to prevent counting this on other screens (simulate game paused)
+    targetUpdatedAt = millis();
+    ledUpdatedAt = millis();
+  }
+}
+
+void setTargetUpdateByScore() {
+  if ((score % 10 == 0) && (targetUpdateParams.max > targetUpdateParams.min)) {
+    targetUpdateParams.max = MAX_TARGET_UPDATE_DEFAULT - score*100; //degradation by 1000
+  }
+  if (targetUpdateParams.max < targetUpdateParams.min) targetUpdateParams.max = targetUpdateParams.min;
+
+  if (score > 25) {
+    targetUpdateParams.min = 1000; //minimal degradation
   }
 }

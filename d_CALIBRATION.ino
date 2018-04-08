@@ -25,10 +25,10 @@ void showCalibrationValues() {
   if ((pot == calibration_pot) && (index >= 5)) {
     lcd.setCursor(0, 1);
     lcd.print("CALIBRATION DONE");
-    calibration = 0;
     if (calibration != 0) {
       updateCalibration(0);
     }
+    calibration = 0;
     return;
   }
   pot = treatPotValue(analogRead(PIN_POT));

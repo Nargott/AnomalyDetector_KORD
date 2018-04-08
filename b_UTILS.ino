@@ -13,6 +13,7 @@ int treatPotValue(int data) {
 
 byte getCalibrationLevel() {
   calibration = readCalibration();
+  Serial.println("Calibration: "+String(calibration));
   if (calibration < CALIBRATION_MIN) return CALIBRATION_OK;
   if ((calibration >= CALIBRATION_MIN) && (calibration < CALIBRATION_MIDDLE)) return CALIBRATION_WARNING;
   if ((calibration >= CALIBRATION_MIDDLE) && (calibration < CALIBRATION_FULL)) return CALIBRATION_ERROR;
@@ -77,4 +78,15 @@ byte readCalibration() {
 }
 void updateCalibration(byte value) {
   EEPROM.updateByte(ADDR_CALIBRATION, value);
+}
+
+byte readHiScore() {
+  return EEPROM.readByte(ADDR_HI_SCORE);
+}
+void updateHiScore(byte value) {
+  hiScore = readHiScore();
+  if (value > hiScore) {
+    EEPROM.updateByte(ADDR_HI_SCORE, value);
+    hiScore = readHiScore();
+  }
 }

@@ -17,17 +17,17 @@
 #define TONE_FREQUENCY 710 //1400
 #define CALIBRATION_IN_POT_VALUE 1000
 
-#define CALIBRATION_MIN 5
-#define CALIBRATION_MIDDLE 10
-#define CALIBRATION_FULL 15
-#define CALIBRATION_MAX 20
+#define CALIBRATION_MIN 10
+#define CALIBRATION_MIDDLE 20
+#define CALIBRATION_FULL 30
+#define CALIBRATION_MAX 50
 
 #define CALIBRATION_OK 0
 #define CALIBRATION_WARNING 1
 #define CALIBRATION_ERROR 2
 #define CALIBRATION_FAIL 3
 
-const unsigned long CALIBRATION_TIME_INTERVAL = 1000; //5*60*1000; //5 mins in millis
+const unsigned long CALIBRATION_TIME_INTERVAL = 2*60*1000; //5*60*1000; //2 mins in millis
 
 //views
 #define VIEW_START 0
@@ -50,6 +50,11 @@ byte viewState = 0;
 int pot;
 byte calibration;
 byte calibrationStatus;
+int hiScore = 0;
+
+//game params
+int MIN_TARGET_UPDATE_DEFAULT = 2000;
+int MAX_TARGET_UPDATE_DEFAULT = 10000;
 
 //declare some functions
 void displayMapItem(MapItem* item);

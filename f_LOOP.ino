@@ -37,7 +37,7 @@ void loop() {
       digitalWrite(PIN_LED_RED, HIGH);
       enableSound(pot);
     }
-  } else if ((viewState == VIEW_WARNING)|| (viewState == VIEW_CALIBRATION)) {
+  } else if ((viewState == VIEW_WARNING) || (viewState == VIEW_CALIBRATION)) {
     disableSound();
     lcd.clear();
     displayFullMap(game_map);
@@ -52,6 +52,12 @@ void loop() {
     viewState = VIEW_SCORE;
     lcd.setCursor(0, 0);
     lcd.print("SCORE: "+String(score));
+    lcd.setCursor(0, 1);
+    lcd.print("HI-SCORE: "+String(hiScore));
+    if (score >= hiScore) {
+      lcd.setCursor(10, 0);
+      lcd.print("LEADER");
+    }
   } else if (viewState == VIEW_SCORE) {
     lcd.clear();
     displayFullMap(game_map);
